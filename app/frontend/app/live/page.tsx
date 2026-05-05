@@ -4,128 +4,53 @@ import { useEffect, useState, useRef } from "react";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { apiGet } from "@/app/lib/api";
 import dynamic from "next/dynamic";
-import { Radio, Play, Wifi } from "lucide-react";
+import { Radio, Wifi } from "lucide-react";
 import gsap from "gsap";
 
 const Sidebar = dynamic(() => import("@/app/components/Sidebar"), { ssr: false });
 
-interface Church { id: string; nombre: string; youtube_url: string | null }
-
 export default function LivePage() {
   const { isAuthenticated, token } = useAuth();
-  const [church, setChurch] = useState<Church | null>(null);
+  const [church, setChurch] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const mainRef = useRef<HTMLElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    async function load() {
+    (async () => {
       try {
-        if (isAuthenticated && token) {
-          const data = await apiGet("/churches/my-church", token);
-          setChurch(data);
-        } else {
-          const churches = await apiGet("/churches");
-          if (Array.isArray(churches) && churches.length > 0) setChurch(churches[0]);
-        }
-      } catch {
-        try { const churches = await apiGet("/churches"); if (Array.isArray(churches) && churches.length > 0) setChurch(churches[0]); } catch {}
-      } finally { setLoading(false); }
-    }
-    load();
+        if (isAuthenticated && token) setChurch(await apiGet("/churches/my-church", token));
+        else { const c = await apiGet("/churches"); if (Array.isArray(c) && c.length) setChurch(c[0]); }
+      } catch { try { const c = await apiGet("/churches"); if (Array.isArray(c) && c.length) setChurch(c[0]); } catch {} }
+      finally { setLoading(false); }
+    })();
   }, [isAuthenticated, token]);
 
   useEffect(() => {
-    if (!mainRef.current || loading) return;
+    if (!ref.current || loading) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-      tl.fromTo(".live-header", { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.5 });
-      tl.fromTo(".live-player-wrap", { opacity: 0, scale: 0.97 }, { opacity: 1, scale: 1, duration: 0.6 }, "-=0.2");
-      tl.fromTo(".live-info", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4 }, "-=0.15");
-    }, mainRef);
+      gsap.fromTo(".live-card", { opacity: 0, y: 16, scale: 0.98 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power3.out" });
+    }, ref);
     return () => ctx.revert();
   }, [loading]);
-
-  const youtubeUrl = church?.youtube_url || "";
 
   return (
     <>
       {isAuthenticated && <Sidebar />}
-      <main ref={mainRef} className="flex-1 p-6 md:p-10 overflow-auto">
-        <div className="max-w-5xl mx-auto">
-          <div className="live-header mb-8">
-            <div className="flex items-center gap-4 mb-3">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg shadow-primary/20">
-                <Radio className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-extrabold text-text-primary tracking-tight">Streaming en Vivo</h1>
-                {church && <p className="text-text-secondary text-sm">{church.nombre}</p>}
-              </div>
-            </div>
-          </div>
+      <main ref={ref} className="flex-1 p-6 md:p-10 overflow-auto">
+        <div className="max-w-4xl mx-auto">
+          <header className="mb-6"><h1 className="text-2xl font-extrabold text-[var(--text)]">Streaming</h1>{church && <p className="text-sm text-[var(--text-muted)] mt-1">{church.nombre}</p>}</header>
 
-          <div className="live-player-wrap relative w-full rounded-3xl overflow-hidden shadow-2xl shadow-black/10 ring-1 ring-primary/5 bg-black">
-            {loading ? (
-              <div style={{ paddingBottom: "56.25%" }} className="relative">
-                <div className="absolute inset-0 flex items-center justify-center bg-zinc-900">
-                  <div className="text-center space-y-4">
-                    <div className="w-16 h-16 mx-auto rounded-full border-4 border-primary/30 border-t-primary animate-spin" />
-                    <p className="text-white/50 text-sm">Conectando con la transmision...</p>
-                  </div>
-                </div>
-              </div>
-            ) : youtubeUrl ? (
-              <>
-                <div className="absolute top-0 left-0 right-0 z-10 p-4 flex items-center justify-between">
-                  <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-red-600/90 backdrop-blur-sm">
-                    <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                    <span className="text-xs font-bold text-white tracking-wider">EN VIVO</span>
-                  </div>
-                  {church && (
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/50 backdrop-blur-sm">
-                      <Wifi className="w-3 h-3 text-green-400" />
-                      <span className="text-xs font-medium text-white/80">{church.nombre}</span>
-                    </div>
-                  )}
-                </div>
-                <div style={{ paddingBottom: "56.25%" }} className="relative">
-                  <iframe
-                    className="absolute inset-0 w-full h-full"
-                    src={youtubeUrl}
-                    title={`Streaming en vivo - ${church?.nombre || "Oikos"}`}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                </div>
-              </>
-            ) : (
-              <div style={{ paddingBottom: "56.25%" }} className="relative">
-                <div className="absolute inset-0 flex items-center justify-center bg-zinc-900">
-                  <div className="text-center space-y-3">
-                    <Play className="w-12 h-12 text-white/20 mx-auto" />
-                    <p className="text-white/40 text-sm">No hay transmision configurada para esta iglesia</p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="live-info mt-6 p-6 rounded-3xl bg-surface-alt/50 backdrop-blur-sm border border-primary/5">
-            <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <Radio className="w-5 h-5 text-primary" />
-              </div>
-              <div>
-                <h2 className="font-bold text-text-primary mb-1">Acerca de la transmision</h2>
-                <p className="text-sm text-text-secondary leading-relaxed">
-                  {isAuthenticated
-                    ? "Estas viendo la transmision en vivo de tu iglesia. Conectate con tu comunidad y participa del servicio."
-                    : "Servicio en vivo de la comunidad Oikos. Conectate desde cualquier lugar y comparte este momento."}
-                </p>
-              </div>
+          {loading ? <div className="rounded-2xl bg-black h-0 pb-[56.25%] relative"><div className="absolute inset-0 flex items-center justify-center"><div className="w-10 h-10 border-3 border-brand border-t-transparent rounded-full animate-spin" /></div></div> : church?.youtube_url ? (
+            <div className="live-card relative w-full rounded-2xl overflow-hidden shadow-xl bg-black" style={{ paddingBottom: "56.25%" }}>
+              <div className="absolute top-3 left-3 z-10 flex items-center gap-2 px-2.5 py-1 rounded-full bg-red-600/90"><span className="w-2 h-2 rounded-full bg-white animate-pulse" /><span className="text-xs font-bold text-white">EN VIVO</span></div>
+              <iframe className="absolute inset-0 w-full h-full" src={church.youtube_url} title="Streaming" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
             </div>
-          </div>
+          ) : (
+            <div className="rounded-2xl bg-[var(--surface-card)] border p-12 text-center text-[var(--text-muted)]">
+              <Wifi className="w-10 h-10 mx-auto mb-3 opacity-30" /><p className="font-medium">Sin transmision configurada</p>
+            </div>
+          )}
         </div>
       </main>
     </>

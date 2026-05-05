@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { useAuth } from "@/app/contexts/AuthContext";
-import { LayoutDashboard, Calendar, ClipboardList, User, Radio, Church } from "lucide-react";
+import { LayoutDashboard, Calendar, ClipboardList, Radio, User } from "lucide-react";
 import gsap from "gsap";
 
 const links = [
@@ -16,53 +16,32 @@ const links = [
 
 export default function Sidebar() {
   const { isAuthenticated } = useAuth();
-  const asideRef = useRef<HTMLElement>(null);
+  const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    if (!asideRef.current) return;
+    if (!ref.current) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const ctx = gsap.context(() => {
-      gsap.fromTo(asideRef.current, { x: -40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" });
-      gsap.fromTo("[data-side-link]", { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.3, stagger: 0.05, ease: "power2.out", delay: 0.15 });
-    }, asideRef);
+      gsap.fromTo(ref.current, { x: -32, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "power3.out" });
+      gsap.fromTo("[data-side-link]", { opacity: 0, x: -12 }, { opacity: 1, x: 0, duration: 0.25, stagger: 0.04, ease: "power2.out", delay: 0.15 });
+    }, ref);
     return () => ctx.revert();
   }, []);
 
   if (!isAuthenticated) return null;
 
   return (
-    <aside
-      ref={asideRef}
-      className="hidden md:flex w-64 flex-col bg-surface-alt/80 backdrop-blur-sm border-r border-primary/5 p-4 gap-1"
-      role="navigation"
-      aria-label="Navegacion principal"
-    >
-      <div className="px-4 py-3 mb-4">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-md shadow-primary/20">
-            <Church className="w-5 h-5 text-white" />
-          </div>
-          <span className="font-extrabold text-lg text-primary tracking-tight">Oikos</span>
-        </div>
+    <aside ref={ref} className="hidden md:flex w-60 flex-col bg-[var(--surface-alt)]/60 border-r p-3 gap-0.5" role="navigation">
+      <div className="px-3 py-4 mb-2">
+        <span className="text-sm font-extrabold text-brand tracking-tight">Oikos</span>
       </div>
-
-      {links.map((link) => (
-        <Link
-          key={link.href}
-          data-side-link
-          href={link.href}
-          className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-primary/5 active:scale-[0.98] transition-all duration-200 group"
-        >
-          <link.icon className="w-5 h-5 text-text-secondary/60 group-hover:text-primary transition-colors duration-200" />
-          {link.label}
+      {links.map((l) => (
+        <Link key={l.href} data-side-link href={l.href} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text)] hover:bg-brand/5 active:scale-[0.98] transition-all duration-150">
+          <l.icon className="w-4.5 h-4.5" /> {l.label}
         </Link>
       ))}
-
-      <div className="mt-auto pt-8 px-4">
-        <div className="p-4 rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5 border border-primary/5">
-          <p className="text-xs font-bold text-primary mb-1">Oikos v1.0</p>
-          <p className="text-xs text-text-secondary/50">Construyendo comunidad</p>
-        </div>
+      <div className="mt-auto pt-6 px-3">
+        <p className="text-xs text-[var(--text-muted)]/50">Oikos v1</p>
       </div>
     </aside>
   );

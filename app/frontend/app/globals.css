@@ -1,85 +1,48 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-primary: #386641;
-  --color-primary-light: #4a7c52;
-  --color-primary-dark: #2d5235;
-  --color-secondary: #A7C957;
-  --color-secondary-light: #b8d46b;
-  --color-accent: #F2E8CF;
-  --color-accent-dark: #6A4F4B;
-  --color-surface: var(--surface);
-  --color-surface-alt: var(--surface-alt);
-  --color-brand: var(--brand);
-  --color-text-primary: var(--text-primary);
-  --color-text-secondary: var(--text-secondary);
+  --color-brand: #386641;
+  --color-brand-light: #4a7c52;
+  --color-brand-dark: #2d5235;
+  --color-accent: #A7C957;
+  --color-accent-light: #b8d46b;
+  --color-warm: #F2E8CF;
+  --color-earth: #6A4F4B;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 :root {
   --surface: #F2E8CF;
-  --surface-alt: #e8dbb8;
-  --brand: #386641;
-  --text-primary: #1a1a1a;
-  --text-secondary: #4a4a4a;
+  --surface-alt: #E8D9B8;
+  --surface-card: #FFFFFF;
+  --text: #1A1A1A;
+  --text-muted: #6B6B6B;
+  --border: #D4C9A8;
 }
 
 .dark {
   --surface: #121212;
-  --surface-alt: #1e1e1e;
-  --brand: #4a7c52;
-  --text-primary: #F2E8CF;
-  --text-secondary: #a0a0a0;
+  --surface-alt: #1E1E1E;
+  --surface-card: #252525;
+  --text: #F2E8CF;
+  --text-muted: #9B9B9B;
+  --border: #333333;
 }
 
-*, *::before, *::after {
-  border-color: rgb(0 0 0 / 0.06);
-}
-
-.dark *, .dark *::before, .dark *::after {
-  border-color: rgb(255 255 255 / 0.08);
-}
+* { border-color: var(--border); }
 
 body {
   background: var(--surface);
-  color: var(--text-primary);
-  font-family: var(--font-sans), system-ui, sans-serif;
+  color: var(--text);
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 *:focus-visible {
   outline: 2px solid #386641;
   outline-offset: 2px;
   border-radius: 3px;
-}
-
-@keyframes fade-up {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes scale-in {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-.animate-fade-up {
-  animation: fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.animate-fade-in {
-  animation: fade-in 0.4s cubic-bezier(0.25, 1, 0.5, 1) both;
-}
-
-.animate-scale-in {
-  animation: scale-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {

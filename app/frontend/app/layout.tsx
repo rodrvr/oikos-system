@@ -9,24 +9,19 @@ import Footer from "./components/Footer";
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: "Oikos - Comunidad de Iglesias",
-  description: "Sistema de gestion de iglesias unidas en fe",
-};
+export const metadata: Metadata = { title: "Oikos", description: "Comunidad de iglesias" };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="es" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
-      <body className="min-h-screen flex flex-col bg-surface text-text-primary transition-colors duration-300">
-        <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:px-5 focus:py-3 focus:bg-primary focus:text-white focus:rounded-2xl focus:font-bold">
+      <body className="min-h-screen flex flex-col">
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[999] focus:px-5 focus:py-3 focus:bg-brand focus:text-white focus:rounded-xl focus:font-bold">
           Saltar al contenido
         </a>
         <ThemeProvider>
           <AuthProvider>
             <Navbar />
-            <div className="flex flex-1" id="main-content">
-              {children}
-            </div>
+            <div id="main-content" className="flex flex-1">{children}</div>
             <Footer />
           </AuthProvider>
         </ThemeProvider>
