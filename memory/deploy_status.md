@@ -14,13 +14,8 @@ Database:
 - Estado: LOCAL OK (migraciones ejecutadas)
 - Railway: Usar PostgreSQL plugin
 
+Repositorio:
+- GitHub: https://github.com/rodrvr/oikos-system
+
 Errores:
 - Ninguno
-
-## PASOS PARA DEPLOY
-
-1. Railway: Importar repo GitHub, seleccionar /app/backend
-2. Railway: Agregar PostgreSQL plugin
-3. Railway: Configurar JWT_SECRET en variables de entorno
-4. Vercel: Importar proyecto, seleccionar /app/frontend
-5. Vercel: Configurar NEXT_PUBLIC_API_URL con URL del backend
