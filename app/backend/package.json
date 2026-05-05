@@ -8,13 +8,16 @@
     "dev": "node --watch index.js",
     "build": "npx prisma generate",
     "migrate": "npx prisma migrate dev",
+    "seed": "node prisma/seed.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
-
+  "type": "commonjs"
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
   "engines": {
     "node": ">=20.0.0"
   },
