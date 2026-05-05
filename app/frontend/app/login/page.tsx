@@ -46,15 +46,15 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex-1 flex items-center justify-center px-4 py-12">
+    <div className="flex-1 flex items-center justify-center px-4 py-12 bg-[#F2E8CF] dark:bg-[#121212]">
       <form ref={formRef} onSubmit={handleSubmit} className="w-full max-w-md flex flex-col items-center">
-        <div data-form-icon className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-6 shadow-xl shadow-primary/20">
+        <div data-form-icon className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#386641] to-[#A7C957] flex items-center justify-center mb-6 shadow-xl shadow-[#386641]/20">
           <LogIn className="w-8 h-8 text-white" />
         </div>
 
         <div data-form-heading className="text-center mb-8">
-          <h1 className="text-3xl font-extrabold text-text-primary">Bienvenido de vuelta</h1>
-          <p className="text-text-secondary text-sm mt-2">Ingresa a tu cuenta para continuar</p>
+          <h1 className="text-3xl font-extrabold text-zinc-900 dark:text-[#F2E8CF]">Bienvenido de vuelta</h1>
+          <p className="text-zinc-500 dark:text-zinc-400 text-sm mt-2">Ingresa a tu cuenta para continuar</p>
         </div>
 
         {error && (
@@ -63,30 +63,30 @@ export default function LoginPage() {
           </div>
         )}
 
-        <div className="w-full bg-surface-alt/50 backdrop-blur-sm rounded-3xl p-8 border border-primary/5 shadow-lg space-y-5">
+        <div className="w-full bg-white dark:bg-zinc-900 rounded-3xl p-8 border border-zinc-200 dark:border-zinc-800 shadow-lg space-y-5">
           <div data-form-field className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-text-secondary flex items-center gap-2">
+            <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-2">
               <Mail className="w-3.5 h-3.5" /> Email
             </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 rounded-2xl bg-surface dark:bg-black/20 border border-primary/10 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 text-sm"
+              className="w-full px-4 py-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-[#386641] focus:border-transparent transition-all duration-200 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400"
               placeholder="tu@iglesia.cl"
               required
             />
           </div>
 
           <div data-form-field className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-text-secondary flex items-center gap-2">
+            <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-2">
               <Lock className="w-3.5 h-3.5" /> Contrasena
             </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 rounded-2xl bg-surface dark:bg-black/20 border border-primary/10 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 text-sm"
+              className="w-full px-4 py-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-[#386641] focus:border-transparent transition-all duration-200 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400"
               placeholder="••••••••"
               required
             />
@@ -96,7 +96,7 @@ export default function LoginPage() {
             data-form-btn
             type="submit"
             disabled={loading}
-            className="w-full mt-2 py-3.5 rounded-2xl bg-primary text-white font-bold hover:bg-primary-light active:scale-[0.98] transition-all duration-200 disabled:opacity-50 shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
+            className="w-full mt-2 py-3.5 rounded-2xl bg-[#386641] text-white font-bold hover:bg-[#2d5235] active:scale-[0.98] transition-all duration-200 disabled:opacity-50 shadow-lg shadow-[#386641]/20 flex items-center justify-center gap-2"
           >
             {loading ? (
               <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -108,9 +108,9 @@ export default function LoginPage() {
           </button>
         </div>
 
-        <p className="mt-6 text-sm text-text-secondary">
+        <p className="mt-6 text-sm text-zinc-500 dark:text-zinc-400">
           No tienes cuenta?{" "}
-          <Link href="/register" className="text-primary font-bold hover:underline underline-offset-4">
+          <Link href="/register" className="text-[#386641] font-bold hover:underline underline-offset-4">
             Unete a Oikos
           </Link>
         </p>
