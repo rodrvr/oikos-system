@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { apiGet, apiPost } from "@/app/lib/api";
 import dynamic from "next/dynamic";
-import { SkeletonCard, EmptyState } from "@/app/components/Skeleton";
+import { useStaggerEntrance, usePageEntrance, celebrate } from "@/app/lib/animations";
 
 const Sidebar = dynamic(() => import("@/app/components/Sidebar"), { ssr: false });
 
@@ -26,6 +26,9 @@ export default function EventsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [msg, setMsg] = useState("");
+  const msgRef = useRef<HTMLParagraphElement>(null);
+  const pageRef = usePageEntrance();
+  const eventsRef = useStaggerEntrance("[data-event-card]");
 
   useEffect(() => {
     if (!isAuthenticated) { router.push("/login"); return; }
@@ -33,17 +36,21 @@ export default function EventsPage() {
       try {
         const data = await apiGet("/events", token!);
         setEvents(Array.isArray(data) ? data : []);
-      } catch { setError("Error al cargar eventos"); }
+      } catch { setError("No se pudieron cargar los eventos."); }
       finally { setLoading(false); }
     }
     load();
   }, [isAuthenticated, token, router]);
 
+  useEffect(() => {
+    if (msg && msgRef.current) celebrate(msgRef.current);
+  }, [msg]);
+
   async function inscribir(eventoId: string) {
     setMsg("");
     try {
       await apiPost("/inscriptions", { evento_id: eventoId }, token!);
-      setMsg("Inscripción exitosa");
+      setMsg("Te has inscrito exitosamente");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Error al inscribirse");
     }
@@ -54,37 +61,65 @@ export default function EventsPage() {
   return (
     <>
       <Sidebar />
-      <main className="flex-1 p-6">
-        <h1 className="text-2xl font-bold mb-6 text-primary">Eventos</h1>
-        {msg && <p className="text-green-600 dark:text-green-400 mb-4 animate-fade-in" role="status">{msg}</p>}
-        {error && <p className="text-red-500 mb-4 animate-fade-in" role="alert">{error}</p>}
+      <main ref={pageRef} className="flex-1 p-6 md:p-10">
+        <header className="mb-8">
+          <h1 className="text-3xl font-extrabold text-primary tracking-tight">Eventos</h1>
+          <p className="text-sm text-accent-dark/50 dark:text-accent/40 mt-1">Actividades y reuniones de tu iglesia</p>
+        </header>
+
+        {msg && (
+          <p ref={msgRef} className="mb-6 p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 text-sm font-medium" role="status">
+            {msg}
+          </p>
+        )}
+        {error && <p className="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm" role="alert">{error}</p>}
 
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[1, 2, 3].map((i) => <SkeletonCard key={i} />)}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="rounded-2xl p-6 bg-white/50 dark:bg-zinc-800/50 space-y-3">
+                <div className="h-5 w-2/3 bg-zinc-200 dark:bg-zinc-700 rounded-lg" />
+                <div className="h-4 w-full bg-zinc-100 dark:bg-zinc-600 rounded-lg" />
+                <div className="h-4 w-1/2 bg-zinc-100 dark:bg-zinc-600 rounded-lg" />
+              </div>
+            ))}
           </div>
         ) : events.length === 0 ? (
-          <EmptyState message="No hay eventos disponibles." />
+          <div className="text-center py-20 opacity-40">
+            <p className="text-4xl mb-3">📅</p>
+            <p className="text-lg font-medium">No hay eventos programados</p>
+            <p className="text-sm mt-1">Los eventos de tu iglesia apareceran aqui</p>
+          </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div ref={eventsRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {events.map((e) => (
-              <div key={e.id} className="bg-white dark:bg-zinc-800 rounded-xl shadow-md p-4 flex flex-col gap-2 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] animate-fade-up">
-                <h2 className="font-bold text-lg">{e.titulo}</h2>
-                <p className="text-sm opacity-70">{e.descripcion}</p>
-                <p className="text-sm">{new Date(e.fecha).toLocaleDateString()}</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs px-2 py-1 rounded bg-secondary text-zinc-900 font-medium">
-                    {e.tipo} | {e.cupos} cupos
+              <article
+                key={e.id}
+                data-event-card
+                className="group relative bg-white dark:bg-zinc-800/80 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-transparent hover:border-primary/10 flex flex-col gap-3"
+              >
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="flex items-start justify-between">
+                  <h2 className="font-bold text-lg relative">{e.titulo}</h2>
+                  {e.es_global && (
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 font-medium">Global</span>
+                  )}
+                </div>
+                <p className="text-sm opacity-60 line-clamp-2">{e.descripcion}</p>
+                <time className="text-xs opacity-40">{new Date(e.fecha).toLocaleDateString("es-CL", { weekday: "long", day: "numeric", month: "long" })}</time>
+                <div className="flex items-center gap-2 mt-auto">
+                  <span className={`text-xs font-bold px-3 py-1 rounded-full ${e.tipo === "GRATIS" ? "bg-secondary/20 text-secondary" : "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400"}`}>
+                    {e.tipo}
                   </span>
-                  {e.es_global && <span className="text-xs px-2 py-1 rounded bg-blue-500 text-white">Global</span>}
+                  <span className="text-xs opacity-40">{e.cupos} cupos</span>
                 </div>
                 <button
                   onClick={() => inscribir(e.id)}
-                  className="mt-2 py-2 rounded bg-primary text-white text-sm font-medium hover:bg-[#2d5235] active:scale-[0.97] transition-all duration-150"
+                  className="mt-1 py-2.5 rounded-xl bg-primary text-white text-sm font-bold hover:bg-[#2d5235] active:scale-[0.97] transition-all duration-200 shadow-sm hover:shadow-md"
                 >
                   Inscribirse
                 </button>
-              </div>
+              </article>
             ))}
           </div>
         )}
