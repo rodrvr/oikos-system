@@ -46,24 +46,25 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex-1 flex items-center justify-center px-4 py-12 bg-[#F2E8CF] dark:bg-[#121212]">
-      <form ref={formRef} onSubmit={handleSubmit} className="w-full max-w-md flex flex-col items-center">
-        <div data-form-icon className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#386641] to-[#A7C957] flex items-center justify-center mb-6 shadow-xl shadow-[#386641]/20">
-          <LogIn className="w-8 h-8 text-white" />
-        </div>
-
-        <div data-form-heading className="text-center mb-8">
-          <h1 className="text-3xl font-extrabold text-zinc-900 dark:text-[#F2E8CF]">Bienvenido de vuelta</h1>
-          <p className="text-zinc-500 dark:text-zinc-400 text-sm mt-2">Ingresa a tu cuenta para continuar</p>
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-[#F2E8CF] dark:bg-[#121212]">
+      <form ref={formRef} onSubmit={handleSubmit} className="w-full max-w-md">
+        <div className="flex flex-col items-center mb-8">
+          <div data-form-icon className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#386641] to-[#A7C957] flex items-center justify-center mb-6 shadow-xl shadow-[#386641]/20">
+            <LogIn className="w-8 h-8 text-white" />
+          </div>
+          <div data-form-heading className="text-center">
+            <h1 className="text-3xl font-extrabold text-zinc-900 dark:text-[#F2E8CF]">Bienvenido de vuelta</h1>
+            <p className="text-zinc-500 dark:text-zinc-400 text-sm mt-2">Ingresa a tu cuenta para continuar</p>
+          </div>
         </div>
 
         {error && (
-          <div className="w-full mb-6 p-4 rounded-2xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900">
+          <div className="mb-6 p-4 rounded-2xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900">
             <p className="text-red-600 dark:text-red-400 text-sm font-medium text-center">{error}</p>
           </div>
         )}
 
-        <div className="w-full bg-white dark:bg-zinc-900 rounded-3xl p-8 border border-zinc-200 dark:border-zinc-800 shadow-lg space-y-5">
+        <div className="bg-white dark:bg-zinc-900 rounded-3xl p-8 border border-zinc-200 dark:border-zinc-800 shadow-lg space-y-5">
           <div data-form-field className="space-y-1.5">
             <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-2">
               <Mail className="w-3.5 h-3.5" /> Email
@@ -108,7 +109,7 @@ export default function LoginPage() {
           </button>
         </div>
 
-        <p className="mt-6 text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="mt-6 text-center text-sm text-zinc-500 dark:text-zinc-400">
           No tienes cuenta?{" "}
           <Link href="/register" className="text-[#386641] font-bold hover:underline underline-offset-4">
             Unete a Oikos
