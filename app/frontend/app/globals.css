@@ -2,43 +2,84 @@
 
 @theme inline {
   --color-primary: #386641;
+  --color-primary-light: #4a7c52;
+  --color-primary-dark: #2d5235;
   --color-secondary: #A7C957;
+  --color-secondary-light: #b8d46b;
   --color-accent: #F2E8CF;
   --color-accent-dark: #6A4F4B;
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+  --color-brand: var(--brand);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --animate-fade-up: fade-up 0.3s var(--ease-out-expo) both;
-  --animate-fade-in: fade-in 0.25s var(--ease-out-quart) both;
-  --animate-scale-in: scale-in 0.2s var(--ease-out-quint) both;
-  --animate-slide-left: slide-left 0.25s var(--ease-out-quart) both;
-  --animate-slide-right: slide-right 0.25s var(--ease-out-quart) both;
-  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
-  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 :root {
-  --background: #F2E8CF;
-  --foreground: #1a1a1a;
+  --surface: #F2E8CF;
+  --surface-alt: #e8dbb8;
+  --brand: #386641;
+  --text-primary: #1a1a1a;
+  --text-secondary: #4a4a4a;
 }
 
 .dark {
-  --background: #1a1a1a;
-  --foreground: #F2E8CF;
+  --surface: #121212;
+  --surface-alt: #1e1e1e;
+  --brand: #4a7c52;
+  --text-primary: #F2E8CF;
+  --text-secondary: #a0a0a0;
+}
+
+*, *::before, *::after {
+  border-color: rgb(0 0 0 / 0.06);
+}
+
+.dark *, .dark *::before, .dark *::after {
+  border-color: rgb(255 255 255 / 0.08);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  background: var(--surface);
+  color: var(--text-primary);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 *:focus-visible {
   outline: 2px solid #386641;
   outline-offset: 2px;
-  border-radius: 2px;
+  border-radius: 3px;
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {

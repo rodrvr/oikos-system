@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { apiPost } from "@/app/lib/api";
-import { celebrate, shake } from "@/app/lib/animations";
+import { celebrate } from "@/app/lib/animations";
 import gsap from "gsap";
 
 export default function RegisterPage() {

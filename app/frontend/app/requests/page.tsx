@@ -5,7 +5,7 @@ import { useAuth } from "@/app/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { apiGet, apiPost, apiPut } from "@/app/lib/api";
 import dynamic from "next/dynamic";
-import { useStaggerEntrance, usePageEntrance, celebrate } from "@/app/lib/animations";
+import { useReveal, celebrate } from "@/app/lib/animations";
 
 const Sidebar = dynamic(() => import("@/app/components/Sidebar"), { ssr: false });
 
@@ -28,8 +28,8 @@ export default function RequestsPage() {
   const [mensaje, setMensaje] = useState("");
   const [creating, setCreating] = useState(false);
 
-  const pageRef = usePageEntrance();
-  const requestsRef = useStaggerEntrance("[data-request-card]");
+  const pageRef = useReveal(0.05);
+  const requestsRef = useReveal(0.05);
 
   const loadRequests = useCallback(async () => {
     try {
