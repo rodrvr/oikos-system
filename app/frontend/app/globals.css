@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-primary: #386641;
+  --color-secondary: #A7C957;
+  --color-accent: #F2E8CF;
+  --color-accent-dark: #6A4F4B;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --animate-fade-up: fade-up 0.3s var(--ease-out-expo) both;
+  --animate-fade-in: fade-in 0.25s var(--ease-out-quart) both;
+  --animate-scale-in: scale-in 0.2s var(--ease-out-quint) both;
+  --animate-slide-left: slide-left 0.25s var(--ease-out-quart) both;
+  --animate-slide-right: slide-right 0.25s var(--ease-out-quart) both;
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root {
+  --background: #F2E8CF;
+  --foreground: #1a1a1a;
+}
+
+.dark {
+  --background: #1a1a1a;
+  --foreground: #F2E8CF;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+*:focus-visible {
+  outline: 2px solid #386641;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

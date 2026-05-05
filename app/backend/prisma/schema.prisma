@@ -1,0 +1,105 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+  engine   = "library"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum TipoEvento {
+  GRATIS
+  PAGO
+}
+
+enum Estado {
+  PENDIENTE
+  APROBADO
+  RECHAZADO
+}
+
+model Iglesia {
+  id          String    @id @default(uuid())
+  nombre      String
+  direccion   String
+  historia    String
+  youtube_url String?
+  created_at  DateTime  @default(now())
+  usuarios    Usuario[]
+  eventos     Evento[]
+  noticias    Noticia[]
+}
+
+model Rol {
+  id       String    @id @default(uuid())
+  nombre   String
+  usuarios Usuario[]
+}
+
+model Usuario {
+  id                  String        @id @default(uuid())
+  nombre              String
+  email               String        @unique
+  password            String
+  rut                 String        @unique
+  direccion           String
+  telefono            String
+  telefono_emergencia String
+  fecha_nacimiento    DateTime
+  foto_url            String
+  iglesia_id          String
+  rol_id              String
+  created_at          DateTime      @default(now())
+  iglesia             Iglesia       @relation(fields: [iglesia_id], references: [id])
+  rol                 Rol           @relation(fields: [rol_id], references: [id])
+  inscripciones       Inscripcion[]
+  solicitudes         Solicitud[]   @relation("SolicitudUsuario")
+  pastor_solicitudes  Solicitud[]   @relation("SolicitudPastor")
+}
+
+model Evento {
+  id            String        @id @default(uuid())
+  titulo        String
+  descripcion   String
+  fecha         DateTime
+  cupos         Int
+  tipo          TipoEvento
+  es_global     Boolean       @default(false)
+  iglesia_id    String
+  created_at    DateTime      @default(now())
+  iglesia       Iglesia       @relation(fields: [iglesia_id], references: [id])
+  inscripciones Inscripcion[]
+}
+
+model Noticia {
+  id         String   @id @default(uuid())
+  titulo     String
+  contenido  String
+  iglesia_id String
+  created_at DateTime @default(now())
+  iglesia    Iglesia  @relation(fields: [iglesia_id], references: [id])
+}
+
+model Inscripcion {
+  id              String    @id @default(uuid())
+  usuario_id      String
+  evento_id       String
+  estado          Estado    @default(PENDIENTE)
+  comprobante_url String?
+  created_at      DateTime  @default(now())
+  usuario         Usuario   @relation(fields: [usuario_id], references: [id])
+  evento          Evento    @relation(fields: [evento_id], references: [id])
+}
+
+model Solicitud {
+  id               String   @id @default(uuid())
+  usuario_id       String
+  pastor_id        String
+  mensaje          String
+  estado           Estado   @default(PENDIENTE)
+  fecha_solicitada DateTime
+  created_at       DateTime @default(now())
+  usuario          Usuario  @relation("SolicitudUsuario", fields: [usuario_id], references: [id])
+  pastor           Usuario  @relation("SolicitudPastor", fields: [pastor_id], references: [id])
+}
