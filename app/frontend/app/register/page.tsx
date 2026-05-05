@@ -63,7 +63,7 @@ export default function RegisterPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-[#F2E8CF] dark:bg-[#121212]">
+      <div className="flex-1 flex items-center justify-center px-4 py-12">
         <div ref={successRef} className="text-center bg-white dark:bg-zinc-900 rounded-3xl shadow-xl p-10 border border-[#A7C957]/20">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#386641] to-[#A7C957] flex items-center justify-center mx-auto mb-4">
             <UserPlus className="w-8 h-8 text-white" />
@@ -76,7 +76,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-8 bg-[#F2E8CF] dark:bg-[#121212]">
+    <div className="flex-1 flex items-center justify-center px-4 py-8">
       <form ref={formRef} onSubmit={handleSubmit} className="w-full max-w-lg">
         <div className="flex flex-col items-center mb-6">
           <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#386641] to-[#A7C957] flex items-center justify-center mb-4 shadow-xl shadow-[#386641]/20">

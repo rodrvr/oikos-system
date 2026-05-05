@@ -46,7 +46,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-[#F2E8CF] dark:bg-[#121212]">
+    <div className="flex-1 flex items-center justify-center px-4 py-12">
       <form ref={formRef} onSubmit={handleSubmit} className="w-full max-w-md">
         <div className="flex flex-col items-center mb-8">
           <div data-form-icon className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#386641] to-[#A7C957] flex items-center justify-center mb-6 shadow-xl shadow-[#386641]/20">
