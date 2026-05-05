@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { apiPost, apiGet } from "@/app/lib/api";
 import { celebrate } from "@/app/lib/animations";
-import { UserPlus, Mail, Lock, User, Hash, MapPin, Phone, AlertTriangle, Church, ChevronDown } from "lucide-react";
+import { UserPlus, Mail, Lock, User, Hash, MapPin, Phone, AlertTriangle, Church, ChevronDown, Calendar, PhoneCall } from "lucide-react";
 import gsap from "gsap";
 
 interface Iglesia { id: string; nombre: string }
@@ -42,7 +42,7 @@ export default function RegisterPage() {
     if (!formRef.current) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const ctx = gsap.context(() => {
-      gsap.fromTo(formRef.current!.querySelectorAll("[data-reg-field]"), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.35, stagger: 0.05, ease: "power3.out", delay: 0.2 });
+      gsap.fromTo(formRef.current!.querySelectorAll("[data-reg-field]"), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.35, stagger: 0.03, ease: "power3.out", delay: 0.2 });
     }, formRef);
     return () => ctx.revert();
   }, [churches]);
@@ -53,9 +53,7 @@ export default function RegisterPage() {
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setShowChurchSelect(false);
-      }
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) setShowChurchSelect(false);
     }
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
@@ -75,17 +73,14 @@ export default function RegisterPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    if (!form.iglesia_id) {
-      setError("Selecciona una iglesia para continuar.");
-      return;
-    }
+    if (!form.iglesia_id) { setError("Selecciona una iglesia para continuar."); return; }
     setLoading(true);
     try {
       await apiPost("/auth/register", form);
       setSuccess(true);
       setTimeout(() => router.push("/login"), 2500);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "No pudimos crear tu cuenta. Revisa los datos.");
+      setError(err instanceof Error ? err.message : "No pudimos crear tu cuenta.");
     } finally { setLoading(false); }
   }
 
@@ -97,11 +92,22 @@ export default function RegisterPage() {
             <UserPlus className="w-8 h-8 text-white" />
           </div>
           <h2 className="text-2xl font-extrabold text-zinc-900 dark:text-[#F2E8CF] mb-2">Cuenta creada</h2>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">Bienvenido a Oikos. Redirigiendo al inicio de sesion...</p>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">Bienvenido a Oikos. Redirigiendo...</p>
         </div>
       </div>
     );
   }
+
+  const fields = [
+    { name: "nombre", label: "Nombre completo", type: "text", icon: User, required: true },
+    { name: "email", label: "Email", type: "email", icon: Mail, required: true },
+    { name: "password", label: "Contrasena", type: "password", icon: Lock, required: true },
+    { name: "rut", label: "RUT (XX.XXX.XXX-X)", type: "text", icon: Hash, required: true },
+    { name: "direccion", label: "Direccion", type: "text", icon: MapPin, required: true },
+    { name: "telefono", label: "Telefono", type: "text", icon: Phone, required: true },
+    { name: "telefono_emergencia", label: "Telefono Emergencia", type: "text", icon: PhoneCall, required: false },
+    { name: "fecha_nacimiento", label: "Fecha de Nacimiento", type: "date", icon: Calendar, required: true },
+  ];
 
   return (
     <div className="flex-1 flex items-center justify-center px-4 py-8 bg-[#F2E8CF] dark:bg-[#121212]">
@@ -122,7 +128,7 @@ export default function RegisterPage() {
         )}
 
         <div className="w-full bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-lg space-y-3.5">
-          <div ref={dropdownRef} data-reg-field className="space-y-1.5">
+          <div ref={dropdownRef} data-reg-field className="relative space-y-1.5">
             <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-2">
               <Church className="w-3.5 h-3.5" /> Iglesia <span className="text-red-500">*</span>
             </label>
@@ -137,16 +143,16 @@ export default function RegisterPage() {
               <ChevronDown className={`w-4 h-4 text-zinc-400 transition-transform duration-200 ${showChurchSelect ? "rotate-180" : ""}`} />
             </button>
             {showChurchSelect && (
-              <div className="absolute z-50 mt-1 w-[calc(100%-3rem)] max-h-48 overflow-auto rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-xl">
+              <div className="absolute z-50 left-0 right-0 mt-1 max-h-52 overflow-auto rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-2xl">
                 {loadingChurches ? (
-                  <div className="p-3 text-sm text-zinc-400 text-center">Cargando iglesias...</div>
+                  <div className="p-4 text-sm text-zinc-400 text-center">Cargando iglesias...</div>
                 ) : (
                   churches.map((church) => (
                     <button
                       key={church.id}
                       type="button"
                       onClick={() => selectChurch(church)}
-                      className={`w-full text-left px-4 py-2.5 text-sm hover:bg-[#386641]/5 transition-colors duration-100 first:rounded-t-xl last:rounded-b-xl text-zinc-700 dark:text-zinc-300 ${form.iglesia_id === church.id ? "bg-[#386641]/10 font-semibold text-[#386641]" : ""}`}
+                      className={`w-full text-left px-4 py-3 text-sm hover:bg-[#386641]/5 transition-colors duration-100 first:rounded-t-xl last:rounded-b-xl text-zinc-700 dark:text-zinc-300 ${form.iglesia_id === church.id ? "bg-[#386641]/10 font-semibold text-[#386641] dark:text-[#A7C957]" : ""}`}
                     >
                       {church.nombre}
                     </button>
@@ -156,12 +162,7 @@ export default function RegisterPage() {
             )}
           </div>
 
-          {[
-            { name: "nombre", label: "Nombre completo", type: "text", icon: User },
-            { name: "email", label: "Email", type: "email", icon: Mail },
-            { name: "password", label: "Contrasena", type: "password", icon: Lock },
-            { name: "rut", label: "RUT (XX.XXX.XXX-X)", type: "text", icon: Hash },
-          ].map((f) => (
+          {fields.map((f) => (
             <div key={f.name} data-reg-field className="space-y-1.5">
               <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-2">
                 <f.icon className="w-3.5 h-3.5" /> {f.label}
@@ -172,7 +173,7 @@ export default function RegisterPage() {
                 value={(form as Record<string, string>)[f.name]}
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-[#386641] focus:border-transparent transition-all duration-200 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400"
-                required
+                required={f.required}
               />
             </div>
           ))}
@@ -183,11 +184,7 @@ export default function RegisterPage() {
           disabled={loading}
           className="w-full max-w-lg mt-4 py-3.5 rounded-2xl bg-[#386641] text-white font-bold hover:bg-[#2d5235] active:scale-[0.98] transition-all duration-200 disabled:opacity-50 shadow-lg shadow-[#386641]/20 flex items-center justify-center gap-2"
         >
-          {loading ? (
-            <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-          ) : (
-            <>Crear cuenta</>
-          )}
+          {loading ? <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : "Crear cuenta"}
         </button>
 
         <p className="mt-4 text-sm text-zinc-500 dark:text-zinc-400">
